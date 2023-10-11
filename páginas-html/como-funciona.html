@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../estilos-css/estilo-artigos.css">
+    <link rel="shortcut icon" href="../imagens/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="../estilos-css/menu.css">
+    <script defer src="../código-js/menu.js"></script>
+    <title>Funcionamento</title>
+</head>
+<body>
+  <header class="header">
+    <nav class="nav">
+      <a href="index.html" class="logo">Solaria</a>
+      <button class="hamburger"></button>
+      <ul class="nav-list">
+        <li><a href="index.html">Solaria</a></li>
+        <li><a href="sobre-o-projeto.html">Sobre o Projeto</a></li>
+        <li><a href="inscricoes.html">Inscrições</a></li>
+      </ul>
+    </nav>
+  </header>
+    <main>
+        <h1>Como funciona o nosso projeto?</h1>
+        <p>A ideia para o nosso projeto é construir um seguidor solar e um medidor de energia. O seguidor solar é controlado por um algoritmo que utiliza sensores para rastrear a posição do sol no céu. Esses dados são usados para mover os painéis solares em tempo real. Paralelamente, o medidor de energia coleta informações dos dispositivos conectados e fornece uma visão abrangente do consumo energético, permitindo ajustes e tomada de decisões informadas. Nosso projeto tem vastas possibilidades de aplicação, desde residências e comunidades até sistemas comerciais e industriais. Ele pode ser adaptado para uso em áreas remotas ou como parte integrante de redes elétricas urbanas. </p>
+        <h2>Materiais e Métodos: Seguidor Solar</h2>
+        <p>Desenvolvemos um seguidor solar que altera a posição dos módulos fotovoltaicos ao longo do dia, seguindo o caminho do sol, no nosso protótipo, seguiria de acordo com a luz no LDR.</p>
+        <p>Para criarmos esse projeto, usamos os seguintes materiais:  </p>
+        <ul>
+          <li>Placa Arduíno Uno;</li>
+          <li>1 LDR;</li>
+          <li>1 Micro Servo 9g Sg90;</li>
+          <li>1 Placa Solar 107x61MM;</li>
+          <li>1 Resistor 1  kΩ;</li>
+          <li>1 Protoboard;</li>
+          <li>1 LED Amarelo</li>
+        </ul>
+        <p>Arduino é uma plataforma de prototipagem eletrônica, serve para facilitar o aprendizado de programação, ensinando as pessoas a desenvolverem projetos de eletrônica e de robótica, automatizar escritório, criar um novo brinquedo ou jogos, etc.</p>
+        <p>O nosso esquema foi criado seguindo as informações do código:</p>
+        <pre>
+          <code>
+#include &lt;Servo.h&gt;
+Servo servoX;
+Servo servoY;
+int ldr1Pin = A0; // LDR 1 pino
+int servoYPin = 10; // Pino servo Y
+int ldr1Value;
+int servoYAngle;
+
+void setup() {
+  servoY.attach(servoYPin);
+}
+
+void loop() {
+  ldr1Value = analogRead(ldr1Pin); // Ler os valores do LDR
+  servoYAngle = map(ldr1Value, 0, 1023, 0, 180); // Mapeie valores LDR para ângulos do servo
+  servoY.write(servoYAngle) // Definir ângulos de servo
+  delay(50); 
+}
+            </code>
+        </pre>
+        <br>
+        <p>A função <strong>loop()</strong> é onde o código principal é executado em um loop contínuo após a inicialização. <strong>ldr1Value</strong> recebe o valor lido do sensor LDR usando a função. analogRead(ldr1Pin), que converte a leitura analógica para um valor digital. Em seguida, o valor lido do LDR é mapeado para um ângulo de servo utilizando a função <strong>map()</strong>. Isso permite que a variação do sensor LDR seja convertida em uma faixa de ângulos entre 0 e 180 graus, adequada para o servo motor. <strong>servoY.write(servoYAngle)</strong> envia o ângulo calculado para o servo Y, fazendo-o mover-se para a posição correspondente. <strong>delay (50)</strong> introduz um pequeno atraso de 50 milissegundos entre as iterações do loop, permitindo um controle suave do servo e evitando movimentos bruscos. </p>
+        <h2>Materiais e Métodos: Medidor de Energia</h2>
+        <p>O esquema segue o seguinte código:</p>
+        <pre>
+          <code>
+#include"EmonLib.h" 
+#include &lt;Wire.h&gt; 
+#include &lt;LiquidCrystal_I2C.h&gt;
+ 
+EnergyMonitor SCT013; 
+int pinSCT = A1; //Pino analógico conectado ao SCT-013 
+int tensao = 127; 
+int potencia; 
+// Inicializa o display no endereco 0x27 
+LiquidCrystal_I2C lcd(0x27,16,2); 
+ 
+void setup() 
+{ 
+  SCT013.current(pinSCT, 60.607); 
+  lcd.init(); 
+  lcd.setBacklight(HIGH); 
+} 
+
+void loop() 
+{ 
+  double Irms = SCT013.calcIrms(1480); // Calcula o valor da Corrente 
+  potencia = Irms * tensao; // Calcula o valor da Potencia Instantanea  
+  lcd.clear(); 
+  lcd.setCursor(0,0); 
+  lcd.print("Corr. = "); 
+  lcd.print(Irms); 
+  lcd.print(" A"); 
+  lcd.setCursor(0,1); 
+  lcd.print("Pot. = "); 
+  lcd.print(potencia); 
+  lcd.print(" W"); 
+  delay(500); 
+} 
+          </code>
+        </pre>
+        <p>O código inicia com a inclusão de bibliotecas essenciais: <strong>"EmonLib"</strong> para medição de energia, <strong>"Wire"</strong> para comunicação I2C e <strong>"LiquidCrystal_I2C"</strong> para controle do display LCD. Declarações iniciais incluem a definição do pino do sensor SCT-013 e um valor de tensão fictício. No bloco de configuração <strong>setup()</strong>, o sensor SCT-013 é configurado com uma calibração de corrente específica, e o display LCD é inicializado com as dimensões corretas. Dentro do ciclo principal <strong>loop()</strong>, a corrente eficaz é calculada usando <strong>calcIrms()</strong> da EmonLib. A potência instantânea é obtida multiplicando essa corrente pela tensão fictícia. As informações são então exibidas em duas linhas distintas do display LCD. </p>
+    </main>
+</body>
+</html>

@@ -1,0 +1,106 @@
+@charset "UTF-8";
+
+@font-face {
+  font-family: "MuseoModerno";
+  src: url('../fontes/MuseoModerno/MuseoModerno-VariableFont_wght.ttf') format("opentype"); 
+}
+
+@font-face {
+  font-family: "Nunito";
+  src: url('../fontes/Nunito/Nunito-VariableFont_wght.ttf') format("opentype"); 
+}
+
+:root{
+  --cor0: #89888C;
+  --cor1: #A62B0F;
+  --cor2: #D94625;
+  --cor3: #730C02;
+  --cor4: #260101;
+  --cor5: white;
+
+  --fonte-padrao: Nunito, Arial, Verdana, sans-serif;
+  --fonte-titulo: MuseoModerno, cursive;
+}
+
+* {
+    margin: 0%;
+    padding: 0%;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body{
+    min-height: 100vh;
+}
+
+header{
+  margin-bottom: 20px;
+}
+
+main{
+    padding: 15px;
+    font: normal 3vh var(--fonte-padrao);
+    max-width: 800px;
+    margin: auto;
+    text-align: justify;
+}
+
+main h1{
+    text-align: center;
+    font: bolder 5vh var(--fonte-titulo);
+    text-shadow: 3px 3px 5px #00000021;
+    margin: 15px 0px 30px 0px;
+}
+
+main h2{
+  font-size: 4vh;
+}
+
+main h2, p{
+  margin: 8vh 0px 8vh 0px;
+}
+
+picture img{
+    display: block;
+    max-width: 90%;
+    min-width: 60%;
+    max-height: 400px;
+    min-height: 150px;
+    margin: auto;
+
+}
+
+p, main > li {
+  line-height: 5vh;
+}
+
+main li {
+  margin-left: 10vw;
+}
+
+pre{
+  overflow-x: auto;
+  background-color: rgba(0, 0, 0, 0.048);
+  padding: 10px;
+}
+
+code {
+  font-family: monospace;
+}
+
+img {
+  display: block;
+  margin: auto;
+  max-width: 60%;
+}
+
+main a{
+  color: var(--cor2);
+  font-weight: normal;
+  font-family: var(--fonte-padrao);
+  text-decoration: none;
+}
+
+a:hover{
+  color: var(--cor4);
+  text-decoration: underline;
+}

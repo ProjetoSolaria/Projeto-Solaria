@@ -1,0 +1,133 @@
+@charset "UTF-8";
+
+@font-face {
+    font-family: "MuseoModerno";
+    src: url('../fontes/MuseoModerno/MuseoModerno-VariableFont_wght.ttf') format("opentype"); 
+}
+
+@font-face {
+    font-family: "Nunito";
+    src: url('../fontes/Nunito/Nunito-VariableFont_wght.ttf') format("opentype"); 
+}
+
+:root{
+    --cor0: #89888C;
+    --cor1: #A62B0F;
+    --cor2: #D94625;
+    --cor3: #730C02;
+    --cor4: #260101;
+    --cor5: white;
+
+    --fonte-padrao: Nunito, Arial, Verdana, sans-serif;
+    --fonte-titulo: MuseoModerno, cursive;
+}
+
+* {
+    margin: 0%;
+    padding: 0%;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body{
+    background-color: white;
+    min-height: 100vh;
+}
+
+main{
+    background-color: var(--cor5);
+    padding: 20px;
+    font: normal 3vh var(--fonte-padrao);
+    max-width: 800px;
+    margin: auto;
+}
+
+main h1{
+    text-align: center;
+    font: bolder 5.5vh var(--fonte-titulo);
+    text-shadow: 3px 3px 5px #00000021;
+    margin: 15px 0px 30px 0px;
+}
+
+main span{
+    font: italic normal 3vh var(--fonte-padrao);
+}
+
+main p{
+    font: bolder 4vh var(--fonte-padrao);
+    line-height: 8vh;
+}
+
+div#tabela{
+    overflow-x: auto;
+}
+
+table{
+    height: 40vh;
+    min-width: 90%;
+    border-collapse: collapse;
+    margin: 35px auto 35px auto;
+    font: normal 1em var(--fonte-padrao);
+}
+
+div #tabela{
+    overflow-x: auto;
+    white-space: nowrap;  
+}
+
+table thead{
+    background-color: gray;
+    color: white;
+    font-weight: bold;
+    
+}
+
+table td{
+    border: 1px solid black;
+    text-align: center;
+    padding: 2vh;
+}
+
+div#dica{
+    background: url(../imagens/energia-solar.jpg) right center no-repeat fixed;
+    background-size: cover;
+    padding: 30px;
+    box-shadow: inset -2px 1px 15px 4px #0000005c;
+    min-height: 40vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+div article{
+    background-color: rgb(0 0 0 / 63%);
+    padding: 20px;
+    border-radius: 10px;
+    color: white;
+    font: normal 3.5vh var(--fonte-padrao);
+    max-width: 60vw;
+    margin: auto;
+}
+
+p#formula{
+    font: italic bolder 3.5vh var(--fonte-padrao);
+    margin: 5px;
+    text-align: center;
+}
+
+footer{
+    background-color: var(--cor3);
+    text-align: center;
+    padding: 15px;
+    color: white;
+    font: normal 1em var(--fonte-padrao);
+}
+
+footer h2{
+    font-weight: bolder;
+    margin-bottom: 15px;
+}
+
+footer p{
+    border-top: solid 1px white;
+    padding: 16px;
+}

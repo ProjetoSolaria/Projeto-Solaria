@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../estilos-css/estilo-main.css">
+    <link rel="shortcut icon" href="../imagens/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="../estilos-css/menu.css">
+    <script defer src="../código-js/menu.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js"></script>
+    <script>
+        if (typeof navigator.serviceWorker !== 'undefined') {
+          navigator.serviceWorker.register('../sw-index.js')
+        }
+    </script>
+    <script>
+        /***************************************************
+         * Cliente MQTT
+         */
+        // Variáveis para cliente MQTT
+        var mqtt;
+        var reconnectTimeout = 2000;
+        var host = "broker.hivemq.com";
+        var port = 8884;
+        // Tensão em volts (fixa)
+        var tensao = 127;
+
+        function onConnect() {
+            // Conexao ao Broker
+            console.log("Conectado");
+            mqtt.subscribe("projeto-solaria");
+        }
+
+        function onError(message) {
+            // Ocorrencia de erro
+            console.log("Falha: " + message.errorCode + " " + message.errorMessage);
+            setTimeout(MQTTConnect, reconnectTimeout);
+        }
+
+        function onMessageArrived(msg) {
+            // Mensagem recebida
+            console.log("Mensagem: " + msg.destinationName + "=" + msg.payloadString);
+            var valor_corrente = parseFloat(msg.payloadString);
+            // Seleciona um elemento com o ID "corrente"
+            var elemento = document.getElementById("corrente");
+            // Altera o texto dentro desse elemento
+            elemento.innerHTML = valor_corrente.toFixed(2) + " A";
+
+            // Calculo da potência
+            var potencia = tensao * valor_corrente;
+            // Seleciona um elemento com o ID "potencia"
+            var element = document.getElementById("potencia");
+            // Altera o texto dentro desse elemento
+            element.innerHTML = potencia.toFixed(2) + " W";  
+        }
+
+        function MQTTConnect() {
+            // Conecta no Broker
+            console.log("Conectando " + host + " " + port);
+            mqtt = new Paho.MQTT.Client(host, port, "web-solaria" + parseInt(Math.random() * 1e5));
+            var options = { timeout: 10,
+                            useSSL: true,
+                            keepAliveInterval: 10,
+                            onSuccess: onConnect,
+                            onFailure: onError
+                            };
+            mqtt.onMessageArrived = onMessageArrived;
+            mqtt.onConnectionLost = onError;
+            mqtt.connect(options);
+        }
+
+    </script>
+    <title>Solaria</title>
+</head>
+<body onload="MQTTConnect()">
+    <header class="header">
+        <nav class="nav">
+          <a href="index.html" class="logo">Solaria</a>
+          <button class="hamburger"></button>
+          <ul class="nav-list">
+            <li><a href="sobre-o-projeto.html">Sobre o Projeto</a></li>
+            <li><a href="como-funciona.html">Como Funciona?</a></li>
+            <li><a href="inscricoes.html">Inscrições</a></li>
+          </ul>
+        </nav>
+    </header>
+    <main>
+        <h1>Veja as informações do nosso Medidor de Energia</h1>
+        <p>Corrente: <span id="corrente">.</span></p>
+        <p>Potência: <span id="potencia">.</span></p>
+        <div id="tabela">
+            <table>
+                <thead>
+                    <td>Aparelho</td>
+                    <td>Consumo Médio</td>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Micro-ondas</td>
+                        <td>1300 W</td>
+                    </tr>
+                    <tr>
+                        <td>Computador</td>
+                        <td>350 W</td>
+                    </tr>
+                    <tr>
+                        <td>Chuveiro elétrico</td>
+                        <td>5000 W</td>
+                    </tr>
+                    <tr>
+                        <td>Televisão</td>
+                        <td>200 W</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+    <div id="dica">
+        <article>
+            <p>Para fazer o cálculo do consumo de um equipamento elétrico é necessário verificar a potência deste equipamento, que como é mostrada pelo medidor de energia é dada em (W). O cálculo é muito simples, basta você multiplicar a potência pelo tempo de funcionamento em horas por dia durante o mês, depois é só dividir por 1000. Fazendo desta forma, fica fácil descobrir qual é o consumo em kWh do equipamento por dia.</p>
+            <br>
+            <p id="formula">Consumo diário (kWh) = Potência(W) / 1000 x Tempo de funcionamento (horas por dia)</p>
+        </article>
+    </div>
+    <footer>
+        <h2>Membros do Projeto</h2>
+        <p>Alan Alves de Lima, Gabriel Anjos Bottino, Guilherme Bezerra da Silva, Kathelyn Beatriz Ferreira da Silva, Kleber Ricardo Andrade Santos, Luiz Otávio Vieira Reis, Natália Agra Arcanjo.</p>
+    </footer>
+</body>
+</html>
