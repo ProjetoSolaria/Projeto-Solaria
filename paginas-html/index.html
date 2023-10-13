@@ -8,6 +8,12 @@
     <link rel="shortcut icon" href="../imagens/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="../estilos-css/menu.css">
     <script defer src="../código-js/menu.js"></script>
+    <link rel="manifest" href="../manifesto.json">
+    <script>
+        if (typeof navigator.serviceWorker !== 'undefined') {
+          navigator.serviceWorker.register('../sw.js')
+        }
+      </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js"></script>
     <script>
         /***************************************************
