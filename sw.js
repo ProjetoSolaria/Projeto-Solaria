@@ -7,8 +7,8 @@ const filesToCache = [
   "/paginas-html/sobre-o-projeto.html",
   "/paginas-html/como-funciona.html",
   "/paginas-html/inscricoes.html",
-  "/estilo-css/estilo-main.css",
-  "/estilo-css/estilo-artigos.css",
+  "/estilos-css/estilo-main.css",
+  "/estilos-css/estilo-artigos.css",
   "/código-js/menu.js"
 ];
 
