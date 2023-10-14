@@ -4,7 +4,6 @@ const CACHE = "pwabuilder-page";
 const offlineFallbackPage = "paginas-html/offline.html";
 const cacheName = "my-site-cache";
 const filesToCache = [
-  "/",
   "/paginas-html/sobre-o-projeto.html",
   "/paginas-html/como-funciona.html",
   "/paginas-html/inscricoes.html",
@@ -48,20 +47,21 @@ self.addEventListener('fetch', (event) => {
   if (event.request.mode === 'navigate') {
     event.respondWith(
       (async () => {
-        try {
-          const preloadResp = await event.preloadResponse;
+        const cache = await caches.open(cacheName);
+        const cachedResp = await cache.match(event.request);
 
-          if (preloadResp) {
-            return preloadResp;
-          }
-
-          const networkResp = await fetch(event.request);
-          return networkResp;
-        } catch (error) {
-          const cache = await caches.open(cacheName);
-          const cachedResp = await cache.match(offlineFallbackPage);
-          return cachedResp;
+        if (cachedResp) {
+          return cachedResp; // Se a resposta estiver no cache, retorne-a imediatamente.
         }
+
+        const networkResp = await fetch(event.request);
+
+        if (networkResp && networkResp.status === 200) {
+          // Se a resposta da rede for bem-sucedida, armazene-a em cache para uso futuro.
+          cache.put(event.request, networkResp.clone());
+        }
+
+        return networkResp;
       })()
     );
   }
