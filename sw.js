@@ -4,13 +4,13 @@ const CACHE = "pwabuilder-page";
 const offlineFallbackPage = "paginas-html/offline.html";
 const cacheName = "my-site-cache";
 const filesToCache = [
-  "paginas-html/sobre-o-projeto.html",
-  "paginas-html/como-funciona.html",
-  "paginas-html/inscricoes.html",
-  "fontes",
-  "estilos-css",
-  "código-js",
-  "imagens"
+  "/paginas-html/sobre-o-projeto.html",
+  "/paginas-html/como-funciona.html",
+  "/paginas-html/inscricoes.html",
+  "/fontes",
+  "/estilos-css",
+  "/código-js",
+  "/imagens"
 ];
 
 self.addEventListener("message", (event) => {
