@@ -4,12 +4,12 @@ const CACHE = "pwabuilder-page";
 const offlineFallbackPage = "paginas-html/offline.html";
 const cacheName = "my-site-cache";
 const filesToCache = [
-  "/paginas-html/sobre-o-projeto.html",
-  "/paginas-html/como-funciona.html",
-  "/paginas-html/inscricoes.html",
-  "/estilos-css/estilo-main.css",
-  "/estilos-css/estilo-artigos.css",
-  "/código-js/menu.js"
+  "/Projeto-Solaria/paginas-html/sobre-o-projeto.html",
+  "/Projeto-Solaria/paginas-html/como-funciona.html",
+  "/Projeto-Solaria/paginas-html/inscricoes.html",
+  "/Projeto-Solaria/estilos-css/estilo-main.css",
+  "/Projeto-Solaria/estilos-css/estilo-artigos.css",
+  "/Projeto-Solaria/codigo-js/menu.js"
 ];
 
 self.addEventListener("message", (event) => {
