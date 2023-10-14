@@ -100,7 +100,7 @@ main a{
   text-decoration: none;
 }
 
-a:hover{
+main a:hover{
   color: var(--cor4);
   text-decoration: underline;
 }

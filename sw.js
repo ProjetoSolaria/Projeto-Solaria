@@ -4,13 +4,13 @@ const CACHE = "pwabuilder-page";
 const offlineFallbackPage = "paginas-html/offline.html";
 const cacheName = "my-site-cache";
 const filesToCache = [
-  "/paginas-html/sobre-o-projeto.html",
-  "/paginas-html/como-funciona.html",
-  "/paginas-html/inscricoes.html",
-  "/fontes",
-  "/estilos-css",
-  "/código-js",
-  "/imagens"
+  "paginas-html/sobre-o-projeto.html",
+  "paginas-html/como-funciona.html",
+  "paginas-html/inscricoes.html",
+  "fontes",
+  "estilos-css",
+  "código-js",
+  "imagens"
 ];
 
 self.addEventListener("message", (event) => {
@@ -51,13 +51,12 @@ self.addEventListener('fetch', (event) => {
         const cachedResp = await cache.match(event.request);
 
         if (cachedResp) {
-          return cachedResp; // Se a resposta estiver no cache, retorne-a imediatamente.
+          return cachedResp;
         }
 
         const networkResp = await fetch(event.request);
 
         if (networkResp && networkResp.status === 200) {
-          // Se a resposta da rede for bem-sucedida, armazene-a em cache para uso futuro.
           cache.put(event.request, networkResp.clone());
         }
 
@@ -67,37 +66,31 @@ self.addEventListener('fetch', (event) => {
   }
 });
 
-// Verificar atualizações do Service Worker
-self.addEventListener('message', (event) => {
-  if (event.data && event.data.type === 'CHECK_FOR_UPDATES') {
-    self.checkForUpdates();
+// Exibir notificação e solicitar permissão para instalação
+self.addEventListener('fetch', (event) => {
+  if (event.request.mode === 'navigate') {
+    event.waitUntil(
+      self.clients.matchAll().then((clients) => {
+        if (clients.length === 0) {
+          // O site não está aberto, exiba uma notificação
+          self.registration.showNotification('Bem-vindo ao nosso aplicativo!', {
+            body: 'Você pode instalá-lo na tela inicial do seu dispositivo.',
+            icon: 'ios/16.png',
+            actions: [{ action: 'install', title: 'Instalar' }]
+          });
+        }
+      })
+    );
   }
 });
 
-self.addEventListener('install', (event) => {
-  event.waitUntil(self.skipWaiting());
+// Lidar com o clique no botão "Instalar" da notificação
+self.addEventListener('notificationclick', (event) => {
+  if (event.action === 'install') {
+    self.registration.prompt();
+  }
+  event.notification.close();
 });
-
-self.addEventListener('activate', (event) => {
-  event.waitUntil(self.clients.claim());
-});
-
-self.checkForUpdates = function () {
-  fetch('/service-worker.js').then((response) => {
-    response.text().then((text) => {
-      if (text.includes('self.skipWaiting();')) {
-        self.skipWaiting();
-        self.clients.matchAll().then((clients) => {
-          clients.forEach((client) => {
-            client.postMessage({
-              type: 'UPDATE_READY'
-            });
-          });
-        });
-      }
-    });
-  });
-};
 
 self.addEventListener('beforeinstallprompt', (event) => {
   // Exibe um popup de instalação
