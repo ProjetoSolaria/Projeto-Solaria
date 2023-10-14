@@ -2,10 +2,14 @@
 
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/5.1.2/workbox-sw.js');
 
-const CACHE = "pwabuilder-page";
-
-// TODO: replace the following with the correct offline fallback page i.e.: const offlineFallbackPage = "offline.html";
-const offlineFallbackPage = "paginas-html/offline.html";
+const CACHE = "pwabuilder-page-cache"; // Modifique o nome do cache
+const urlsToCache = [ // Adicione os URLs das páginas que deseja armazenar em cache
+  "/",
+  "/paginas-html/sobre-o-projeto.html",
+  "/paginas-html/como-funciona.html",
+  "/paginas-html/inscricoes.html",
+  "/paginas-html/offline.html" // Atualize com a página de fallback offline correta
+];
 
 self.addEventListener("message", (event) => {
   if (event.data && event.data.type === "SKIP_WAITING") {
@@ -16,7 +20,7 @@ self.addEventListener("message", (event) => {
 self.addEventListener('install', async (event) => {
   event.waitUntil(
     caches.open(CACHE)
-      .then((cache) => cache.add(offlineFallbackPage))
+      .then((cache) => cache.addAll(urlsToCache))
   );
 });
 
