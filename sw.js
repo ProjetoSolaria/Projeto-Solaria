@@ -1,7 +1,7 @@
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/5.1.2/workbox-sw.js');
 
 const CACHE = "pwabuilder-page";
-const offlineFallbackPage = "paginas-html/offline.html";
+const offlineFallbackPage = "/Projeto-Solaria/paginas-html/offline.html";
 const cacheName = "my-site-cache";
 const filesToCache = [
   "/Projeto-Solaria/paginas-html/sobre-o-projeto.html",
@@ -65,37 +65,16 @@ self.addEventListener('fetch', (event) => {
   }
 });
 
-// Exibir notificação e solicitar permissão para instalação
-self.addEventListener('fetch', (event) => {
-  if (event.request.mode === 'navigate') {
-    event.waitUntil(
-      self.clients.matchAll().then((clients) => {
-        if (clients.length === 0) {
-          // O site não está aberto, exiba uma notificação
-          self.registration.showNotification('Bem-vindo ao nosso aplicativo!', {
-            body: 'Você pode instalá-lo na tela inicial do seu dispositivo.',
-            icon: 'ios/16.png',
-            actions: [{ action: 'install', title: 'Instalar' }]
-          });
-        }
-      })
-    );
-  }
-});
-
 // Lidar com o clique no botão "Instalar" da notificação
 self.addEventListener('notificationclick', (event) => {
   if (event.action === 'install') {
-    event.waitUntil(
-      self.registration.showInstallPrompt()
-        .then((outcome) => {
-          if (outcome === 'accepted') {
-            console.log('Usuário aceitou a instalação do app.');
-          } else {
-            console.log('Usuário recusou a instalação do app.');
-          }
-        })
-    );
+    // Use a janela atual para mostrar a janela de instalação
+    clients.matchAll().then((windowClients) => {
+      const client = windowClients[0];
+      if (client && 'navigate' in client) {
+        client.navigate(client.url);
+      }
+    });
   }
   event.notification.close();
 });
