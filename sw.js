@@ -7,10 +7,9 @@ const filesToCache = [
   "/paginas-html/sobre-o-projeto.html",
   "/paginas-html/como-funciona.html",
   "/paginas-html/inscricoes.html",
-  "/fontes",
-  "/estilos-css",
-  "/código-js",
-  "/imagens"
+  "/estilo-css/estilo-main.css",
+  "/estilo-css/estilo-artigos.css",
+  "/código-js/menu.js"
 ];
 
 self.addEventListener("message", (event) => {
@@ -87,7 +86,16 @@ self.addEventListener('fetch', (event) => {
 // Lidar com o clique no botão "Instalar" da notificação
 self.addEventListener('notificationclick', (event) => {
   if (event.action === 'install') {
-    self.registration.prompt();
+    event.waitUntil(
+      self.registration.showInstallPrompt()
+        .then((outcome) => {
+          if (outcome === 'accepted') {
+            console.log('Usuário aceitou a instalação do app.');
+          } else {
+            console.log('Usuário recusou a instalação do app.');
+          }
+        })
+    );
   }
   event.notification.close();
 });
