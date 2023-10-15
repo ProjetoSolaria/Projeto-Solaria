@@ -53,9 +53,6 @@ self.addEventListener('fetch', (event) => {
           return cachedResp;
         }
 
-        // Adicione esta linha para esperar a resolução da promessa preloadResponse.
-        event.waitUntil(await event.preloadResponse);
-
         const networkResp = await fetch(event.request);
 
         if (networkResp && networkResp.status === 200) {
@@ -67,6 +64,7 @@ self.addEventListener('fetch', (event) => {
     );
   }
 });
+
 
 // Exibir notificação e solicitar permissão para instalação
 self.addEventListener('fetch', (event) => {
