@@ -1,5 +1,7 @@
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/5.1.2/workbox-sw.js');
 
+const CACHE = "pwabuilder-page";
+const offlineFallbackPage = "offline.html";
 const cacheName = "my-site-cache";
 const filesToCache = [
   "/Projeto-Solaria/paginas-html/sobre-o-projeto.html",
@@ -10,32 +12,40 @@ const filesToCache = [
   "/Projeto-Solaria/codigo-js/menu.js"
 ];
 
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(cacheName).then((cache) => {
-      return cache.addAll(filesToCache);
-    })
-  );
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "SKIP_WAITING") {
+    self.skipWaiting();
+  }
 });
 
-self.addEventListener('activate', (event) => {
+self.addEventListener('install', async (event) => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.filter((name) => {
-          return name !== cacheName;
-        }).map((name) => {
-          return caches.delete(name);
-        })
-      );
-    })
+    caches.open(cacheName)
+      .then((cache) => {
+        return cache.addAll(filesToCache);
+      })
   );
 });
 
 self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request).then((response) => {
-      return response || fetch(event.request);
-    })
-  );
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      (async () => {
+        const cache = await caches.open(cacheName);
+        const cachedResp = await cache.match(event.request);
+
+        if (cachedResp) {
+          return cachedResp;
+        }
+
+        const networkResp = await fetch(event.request);
+
+        if (networkResp && networkResp.status === 200) {
+          cache.put(event.request, networkResp.clone());
+        }
+
+        return networkResp;
+      })()
+    );
+  }
 });
