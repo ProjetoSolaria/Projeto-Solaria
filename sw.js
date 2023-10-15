@@ -1,7 +1,7 @@
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/5.1.2/workbox-sw.js');
 
 const CACHE = "pwabuilder-page";
-const offlineFallbackPage = "paginas-html/offline.html";
+const offlineFallbackPage = "/Projeto-Solaria/paginas-html/offline.html";
 const cacheName = "my-site-cache";
 const filesToCache = [
   "/Projeto-Solaria/paginas-html/sobre-o-projeto.html",
