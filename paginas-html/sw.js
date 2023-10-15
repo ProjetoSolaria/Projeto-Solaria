@@ -27,21 +27,6 @@ self.addEventListener('install', async (event) => {
   );
 });
 
-self.addEventListener('activate', (event) => {
-  // Limpe caches antigos aqui
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.filter((name) => {
-          return name !== cacheName;
-        }).map((name) => {
-          return caches.delete(name);
-        })
-      );
-    })
-  );
-});
-
 self.addEventListener('fetch', (event) => {
   if (event.request.mode === 'navigate') {
     event.respondWith(
