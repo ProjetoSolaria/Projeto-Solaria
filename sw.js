@@ -46,6 +46,9 @@ self.addEventListener('fetch', (event) => {
   if (event.request.mode === 'navigate') {
     event.respondWith(
       (async () => {
+        // Adicione esta linha para criar uma promessa vazia.
+        const preloadResponse = event.preloadResponse || new Response('', { status: 200 });
+
         const cache = await caches.open(cacheName);
         const cachedResp = await cache.match(event.request);
 
@@ -53,8 +56,8 @@ self.addEventListener('fetch', (event) => {
           return cachedResp;
         }
 
-        // Adicione esta linha para esperar a resolução da promessa preloadResponse.
-        event.waitUntil(await event.preloadResponse);
+        // Aguarde a resolução da promessa de pré-carga antes de buscar na rede.
+        await preloadResponse;
 
         const networkResp = await fetch(event.request);
 
@@ -67,6 +70,7 @@ self.addEventListener('fetch', (event) => {
     );
   }
 });
+
 
 // Exibir notificação e solicitar permissão para instalação
 self.addEventListener('fetch', (event) => {
