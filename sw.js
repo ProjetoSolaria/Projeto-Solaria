@@ -1,7 +1,7 @@
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/5.1.2/workbox-sw.js');
 
 const CACHE = "pwabuilder-page";
-const offlineFallbackPage = "paginas-html/offline.html";
+const offlineFallbackPage = "/Projeto-Solaria/paginas-html/offline.html";
 const cacheName = "my-site-cache";
 const filesToCache = [
   "/Projeto-Solaria/paginas-html/sobre-o-projeto.html",
@@ -52,6 +52,9 @@ self.addEventListener('fetch', (event) => {
         if (cachedResp) {
           return cachedResp;
         }
+
+        // Adicione esta linha para esperar a resolução da promessa preloadResponse.
+        event.waitUntil(await event.preloadResponse);
 
         const networkResp = await fetch(event.request);
 
