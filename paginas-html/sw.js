@@ -48,7 +48,6 @@ self.addEventListener('fetch', (event) => {
   }
 });
 
-// Exibir notificação e solicitar permissão para instalação
 self.addEventListener('fetch', (event) => {
   if (event.request.mode === 'navigate') {
     event.waitUntil(
@@ -66,7 +65,6 @@ self.addEventListener('fetch', (event) => {
   }
 });
 
-// Lidar com o clique no botão "Instalar" da notificação
 self.addEventListener('notificationclick', (event) => {
   if (event.action === 'install') {
     event.waitUntil(
@@ -84,7 +82,6 @@ self.addEventListener('notificationclick', (event) => {
 });
 
 self.addEventListener('beforeinstallprompt', (event) => {
-  // Exibe um popup de instalação
   event.userChoice.then((choiceResult) => {
     if (choiceResult.outcome === 'accepted') {
       console.log('Usuário aceitou a instalação do app.');
