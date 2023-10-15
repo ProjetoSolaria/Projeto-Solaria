@@ -1,13 +1,14 @@
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/5.1.2/workbox-sw.js');
 
+const CACHE = "pwabuilder-page";
 const cacheName = "my-site-cache";
 const filesToCache = [
-  "/sobre-o-projeto.html",
-  "/como-funciona.html",
-  "/inscricoes.html",
-  "/estilos-css/estilo-main.css",
-  "/estilos-css/estilo-artigos.css",
-  "/codigo-js/menu.js"
+  "/Projeto-Solaria/paginas-html/sobre-o-projeto.html",
+  "/Projeto-Solaria/paginas-html/como-funciona.html",
+  "/Projeto-Solaria/paginas-html/inscricoes.html",
+  "/Projeto-Solaria/estilos-css/estilo-main.css",
+  "/Projeto-Solaria/estilos-css/estilo-artigos.css",
+  "/Projeto-Solaria/codigo-js/menu.js"
 ];
 
 self.addEventListener("message", (event) => {
@@ -48,6 +49,7 @@ self.addEventListener('fetch', (event) => {
   }
 });
 
+// Exibir notificação e solicitar permissão para instalação
 self.addEventListener('fetch', (event) => {
   if (event.request.mode === 'navigate') {
     event.waitUntil(
@@ -65,6 +67,7 @@ self.addEventListener('fetch', (event) => {
   }
 });
 
+// Lidar com o clique no botão "Instalar" da notificação
 self.addEventListener('notificationclick', (event) => {
   if (event.action === 'install') {
     event.waitUntil(
@@ -82,6 +85,7 @@ self.addEventListener('notificationclick', (event) => {
 });
 
 self.addEventListener('beforeinstallprompt', (event) => {
+  // Exibe um popup de instalação
   event.userChoice.then((choiceResult) => {
     if (choiceResult.outcome === 'accepted') {
       console.log('Usuário aceitou a instalação do app.');
