@@ -90,6 +90,7 @@ table td{
 div#dica{
     background: url(../imagens/energia-solar.jpg) right center no-repeat fixed;
     background-size: cover;
+    text-align: justify;
     padding: 30px;
     box-shadow: inset -2px 1px 15px 4px #0000005c;
     min-height: 40vh;
