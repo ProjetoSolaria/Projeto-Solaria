@@ -1,7 +1,7 @@
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/5.1.2/workbox-sw.js');
 
 const cacheName = 'my-site-cache';
-const offlineFallbackPage = '/Projeto-Solaria/paginas-html/offline.html';
+const offlineFallbackPage = 'paginas-html/offline.html';
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
