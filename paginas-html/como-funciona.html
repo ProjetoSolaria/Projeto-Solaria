@@ -25,7 +25,7 @@
     <main>
         <h1>Como funciona o nosso projeto?</h1>
         <p>A ideia para o nosso projeto é construir um seguidor solar e um medidor de energia. O seguidor solar é controlado por um algoritmo que utiliza sensores para rastrear a posição do sol no céu. Esses dados são usados para mover os painéis solares em tempo real. Paralelamente, o medidor de energia coleta informações dos dispositivos conectados e fornece uma visão abrangente do consumo energético, permitindo ajustes e tomada de decisões informadas. Nosso projeto tem vastas possibilidades de aplicação, desde residências e comunidades até sistemas comerciais e industriais. Ele pode ser adaptado para uso em áreas remotas ou como parte integrante de redes elétricas urbanas. </p>
-        <h2>Materiais e Métodos: Seguidor Solar</h2>
+        <h2>Materiais e Códigod: Seguidor Solar</h2>
         <p>Desenvolvemos um seguidor solar que altera a posição dos módulos fotovoltaicos ao longo do dia, seguindo o caminho do sol, no nosso protótipo, seguiria de acordo com a luz no LDR.</p>
         <p>Para criarmos esse projeto, usamos os seguintes materiais:  </p>
         <ul>
@@ -35,9 +35,22 @@
           <li>1 Placa Solar 107x61MM;</li>
           <li>1 Resistor 1  kΩ;</li>
           <li>1 Protoboard;</li>
-          <li>1 LED Amarelo</li>
+          <li>1 LED Vermelho</li>
         </ul>
         <p>Arduino é uma plataforma de prototipagem eletrônica, serve para facilitar o aprendizado de programação, ensinando as pessoas a desenvolverem projetos de eletrônica e de robótica, automatizar escritório, criar um novo brinquedo ou jogos, etc.</p>
+
+        <p>O LDR (Light Dependent Resistor) também é conhecido como fotoresistor, é um tipo de resistor que tem a capacidade de variar a sua resistência em função da intensidade de luz que incide sobre ele.</p>
+
+        <p>O Micro Servo Motor SG90 9g é um item essencial para projetos de robótica, mecatrônica e diversos outros projetos. </p>
+                                                              
+        <p>Os resistores são componentes passivos que compõem os circuitos elétricos. A sua finalidade é limitar o fluxo de corrente elétrica em um determinado circuito, além de realizar a conversão de energia elétrica em energia térmica através do efeito joule.</p>
+        
+        <p>Uma placa de ensaio ou matriz de contato (protoboard ou breadboard em inglês) é uma placa com furos e conexões condutores utilizada para a montagem de protótipos e projetos em estado inicial.</p>
+                                      
+        <p>O LED vermelho geralmente serve como indicador de status ou sinalização intermediária durante a execução do programa. Pode ser programado para fornecer informações visuais sobre diferentes estados do sistema ou para sinalizar eventos específicos, contribuindo para a depuração e interação com o dispositivo.</p>
+
+        <p>Para a montagem do seguidor solar, criamos um esquema por meio do site Tinkercad, conforme a imagem abaixo:</p>
+        
         <p>O nosso esquema foi criado seguindo as informações do código:</p>
         <pre>
           <code>
@@ -63,7 +76,30 @@ void loop() {
         </pre>
         <br>
         <p>A função <strong>loop()</strong> é onde o código principal é executado em um loop contínuo após a inicialização. <strong>ldr1Value</strong> recebe o valor lido do sensor LDR usando a função. analogRead(ldr1Pin), que converte a leitura analógica para um valor digital. Em seguida, o valor lido do LDR é mapeado para um ângulo de servo utilizando a função <strong>map()</strong>. Isso permite que a variação do sensor LDR seja convertida em uma faixa de ângulos entre 0 e 180 graus, adequada para o servo motor. <strong>servoY.write(servoYAngle)</strong> envia o ângulo calculado para o servo Y, fazendo-o mover-se para a posição correspondente. <strong>delay (50)</strong> introduz um pequeno atraso de 50 milissegundos entre as iterações do loop, permitindo um controle suave do servo e evitando movimentos bruscos. </p>
+
         <h2>Materiais e Métodos: Medidor de Energia</h2>
+
+        <p>Também desenvolvemos um medidor de energia para medir a potência no ciclo de vida do dispositivo. Para fazer esse projeto, usamos os seguintes materiais: </p>
+
+        <ul>
+          <li>ESP8266;</li>
+          <li>1 Sensor de corrente não invasivo SCT-013;</li>
+          <li>2 resistores de 10 kΩ;</li>
+          <li>1 resistor de 33 kΩ;</li>
+          <li>1 Capacitor Eletrolítico de 100uf X 200v;</li>
+          <li>1 LCD 16x2 com Backlight Azul e escrita branca.</li>
+        </ul>
+
+        <p>O ESP8266 é um microcontrolador que pode fornecer a qualquer projeto a capacidade de conexão wireless com a internet.</p>
+ 
+        <p>Sensor de corrente não invasivo de 30A AC - SCT-013-030 é um sensor que lê a corrente de forma não intrusiva através do efeito Hall. Ele lê corrente até 30A de forma simples e rápida sem interromper o circuito via Arduino ou Pic.</p>
+         
+        <p>Um resistor de 10K é um dispositivo amplamente utilizado em equipamentos elétricos e circuitos eletrônicos. Com ele, você pode gerar calor, limitar a corrente e criar quedas de tensão. Um resistor é um componente cujo objetivo é bloquear o fluxo de eletricidade através de seu material.</p>
+         
+        <p>Um resistor de 33k ohms é um componente eletrônico que oferece uma resistência de 33.000 ohms à passagem de corrente elétrica. Ele é utilizado para controlar a intensidade da corrente em circuitos eletrônicos, ajustando a tensão ou limitando o fluxo de elétrons. Sua cor de faixa é laranja, laranja e laranja, indicando o valor e a tolerância.</p>
+        
+        <p>O nome completo do LCD é "Liquid Crystal Display". Este é o padrão de tela para muitos dispositivos portáteis, como TVs, laptops ou tablets. O LCD é a parte frontal que produz as cores e forma a imagem da tela, e o que muda é o padrão de luz de fundo. As telas LCD usam cores projetadas em transparências, ou seja, não emitem luz. Portanto, a tela precisa de uma fonte de luz (backlight) localizada na parte traseira para exibir a imagem. No Arduino, eles permitem a visualização dos dados processados por um determinado dispositivo. Em geral, são frequentemente utilizados em projetos que requerem a leitura de informações obtidas por sensores ou sistemas.</p>
+
         <p>O esquema segue o seguinte código:</p>
         <pre>
           <code>
