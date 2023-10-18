@@ -101,7 +101,6 @@ void loop() {
           <li>2 resistores de 10 kΩ;</li>
           <li>1 resistor de 33 kΩ;</li>
           <li>1 Capacitor Eletrolítico de 100uf X 200v;</li>
-          <li>1 LCD 16x2 com Backlight Azul e escrita branca.</li>
         </ul>
 
         <p>O ESP8266 é um microcontrolador que pode fornecer a qualquer projeto a capacidade de conexão wireless com a internet.</p>
@@ -120,10 +119,6 @@ void loop() {
 
         <img src="../imagens/resistor 2.jpg" alt="Resistor 33k">
         
-        <p>O nome completo do LCD é "Liquid Crystal Display". Este é o padrão de tela para muitos dispositivos portáteis, como TVs, laptops ou tablets. O LCD é a parte frontal que produz as cores e forma a imagem da tela, e o que muda é o padrão de luz de fundo. As telas LCD usam cores projetadas em transparências, ou seja, não emitem luz. Portanto, a tela precisa de uma fonte de luz (backlight) localizada na parte traseira para exibir a imagem. No Arduino, eles permitem a visualização dos dados processados por um determinado dispositivo. Em geral, são frequentemente utilizados em projetos que requerem a leitura de informações obtidas por sensores ou sistemas.</p>
-
-        <img src="../imagens/lcd.jpg" alt="LCD">
-
         <p>Segue o esquema do medidor de energia</p>
 
         <img src="../imagens/esquema-medidor.jpg" alt="Esquema do Medidor de Energia">
@@ -131,42 +126,102 @@ void loop() {
         <p>O esquema segue o seguinte código:</p>
         <pre>
           <code>
-#include"EmonLib.h" 
-#include &lt;Wire.h&gt; 
-#include &lt;LiquidCrystal_I2C.h&gt;
- 
-EnergyMonitor SCT013; 
-int pinSCT = A1; //Pino analógico conectado ao SCT-013 
-int tensao = 127; 
-int potencia; 
-// Inicializa o display no endereco 0x27 
-LiquidCrystal_I2C lcd(0x27,16,2); 
- 
-void setup() 
-{ 
-  SCT013.current(pinSCT, 60.607); 
-  lcd.init(); 
-  lcd.setBacklight(HIGH); 
-} 
+#include &lt;WiFiManager.h&gt;
+#include &lt;PubSubClient.h&gt;
+#include "EmonLib.h"
 
-void loop() 
-{ 
-  double Irms = SCT013.calcIrms(1480); // Calcula o valor da Corrente 
-  potencia = Irms * tensao; // Calcula o valor da Potencia Instantanea  
-  lcd.clear(); 
-  lcd.setCursor(0,0); 
-  lcd.print("Corr. = "); 
-  lcd.print(Irms); 
-  lcd.print(" A"); 
-  lcd.setCursor(0,1); 
-  lcd.print("Pot. = "); 
-  lcd.print(potencia); 
-  lcd.print(" W"); 
-  delay(500); 
-} 
+EnergyMonitor emon1;
+int pinSCT = A0;   //Pino analógico conectado ao SCT-013
+int tensao = 127;
+int potencia;
+
+WiFiClient wifiClient;                        
+
+//MQTT Server
+const char* BROKER_MQTT = "broker.hivemq.com"; //URL do broker MQTT que se deseja utilizar
+int BROKER_PORT = 1883;                      // Porta do Broker MQTT
+
+#define ID_MQTT  "MEnergia"            //Informe um ID unico e seu. Caso sejam usados IDs repetidos a ultima conexão irá sobrepor a anterior.
+#define TOPIC_PUBLISH "topico1"    //Informe um Tópico único. Caso sejam usados tópicos em duplicidade, o último irá eliminar o anterior.
+PubSubClient MQTT(wifiClient);        // Instancia o Cliente MQTT passando o objeto espClient
+
+//Declaração das Funções
+void mantemConexoes();  //Garante que as conexoes com WiFi e MQTT Broker se mantenham ativas
+void conectaWiFi();     //Faz conexão com WiFi
+void conectaMQTT();     //Faz conexão com Broker MQTT
+void enviaPacote();     //
+
+void setup() {
+  Serial.begin(115200);
+  conectaWiFi();
+  MQTT.setServer(BROKER_MQTT, BROKER_PORT);
+  //Configuração so SCT013  
+  emon1.current(pinSCT, 87);
+}
+
+void loop() {
+  mantemConexoes();
+  enviaValores();
+  MQTT.loop();
+}
+
+void mantemConexoes() {
+    if (!MQTT.connected()) {
+        conectaMQTT();
+    }
+}
+
+void conectaWiFi() {
+    WiFiManager wm;
+    bool res;
+    res = wm.autoConnect("Medidor de Energia");
+    if(!res) {
+        Serial.println("Wifi não conectado");
+    }
+    else {
+        Serial.println("Wifi conectado");
+    }
+}
+
+void conectaMQTT() {
+    while (!MQTT.connected()) {
+        Serial.print("Conectando ao Broker MQTT: ");
+        Serial.println(BROKER_MQTT);
+        if (MQTT.connect(ID_MQTT)) {
+            Serial.println("Conectado ao Broker com sucesso!");
+        }
+        else {
+            Serial.println("Noo foi possivel se conectar ao broker.");
+            Serial.println("Nova tentatica de conexao em 10s");
+            delay(10000);
+        }
+    }
+}
+
+
+void enviaValores() {
+
+  // Calcula o valor da Corrente
+  double Irms = emon1.calcIrms(1480);
+  potencia = Irms * tensao;      
+  Serial.println(Irms);
+
+  // Crie um array de caracteres para armazenar a corrente como string
+  char correnteStr[20];  // Defina um tamanho maior para acomodar a parte decimal
+  
+  // Converte o valor de ponto flutuante para string com 2 casas decimais
+  dtostrf(Irms, 6, 2, correnteStr);
+  
+  // Publicando a mensagem no servidor broker
+  MQTT.publish(TOPIC_PUBLISH, correnteStr); 
+
+  // Exibindo a mensagem enviada no monitor serial
+  Serial.print("Mensagem enviada:");
+  Serial.println(correnteStr);
+}
           </code>
         </pre>
-        <p>O código inicia com a inclusão de bibliotecas essenciais: <strong>"EmonLib"</strong> para medição de energia, <strong>"Wire"</strong> para comunicação I2C e <strong>"LiquidCrystal_I2C"</strong> para controle do display LCD. Declarações iniciais incluem a definição do pino do sensor SCT-013 e um valor de tensão fictício. No bloco de configuração <strong>setup()</strong>, o sensor SCT-013 é configurado com uma calibração de corrente específica, e o display LCD é inicializado com as dimensões corretas. Dentro do ciclo principal <strong>loop()</strong>, a corrente eficaz é calculada usando <strong>calcIrms()</strong> da EmonLib. A potência instantânea é obtida multiplicando essa corrente pela tensão fictícia. As informações são então exibidas em duas linhas distintas do display LCD. </p>
+        <p>O código inicia com a inclusão de bibliotecas essenciais: <strong>"EmonLib"</strong> para medição de energia. Declarações iniciais incluem a definição do pino do sensor SCT-013 e um valor de tensão fictício. No bloco de configuração <strong>setup()</strong>, o sensor SCT-013 é configurado com uma calibração de corrente específica.Dentro do ciclo principal <strong>loop()</strong>, a corrente eficaz é calculada usando <strong>calcIrms()</strong> da EmonLib. A potência instantânea é obtida multiplicando essa corrente pela tensão fictícia. As informações são então enviadas para o servidor broker. </p>
     </main>
 </body>
 </html>
